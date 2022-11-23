@@ -18,11 +18,16 @@ Our team consists of the following members, listed in the table below (the team 
 
 | Student ID | Student Name | GitHub Account (in Email) |
 | ---------- | ------------ | ------------------------- |
-| 123010245  | 张三 🚩      | sanzhang@gmail.com        |
-| 123010345  | 李四         | sili@outlook.com          |
-| 123030245  | 王五         | wuwang@foxmail.com        |
-| 123020245  | 陈六         | liuchen@qq.com            |
-| 123010249  | 朱九         | jiuzhu@163.com            |
+| 120090175  | 彭乔羽 🚩    | 120090175@link.cuhk.edu.cn        |
+| 120090661  | 邓毅轩         | 120090661@link.cuhk.edu.cn            |
+| 120090443  | 周昱潇         | 120090443@link.cuhk.edu.cn            |
+| 120090737  | 刘宇轩         | 120090737@link.cuhk.edu.cn            |
+| 120040088  | 王熹           | 120040088@link.cuhk.edu.cn            |
+| 120090721  | 熊一鸣         | 120090721@link.cuhk.edu.cn            |
+| 120010035  | 黄熹正         | 120010035@link.cuhk.edu.cn            |
+| 120010061  | 林泽昕         | 120010061@link.cuhk.edu.cn            |
+| 120090638  | 孙绍强         | 120090638@link.cuhk.edu.cn            |
+| 120090673  | 曲恒毅         | 120090673@link.cuhk.edu.cn            |
 
 ## Project Specification
 
@@ -31,8 +36,8 @@ Our team consists of the following members, listed in the table below (the team 
 After thorough discussion, our team made the choice and the specification information is listed below:
 
 - Our option choice is: **Option 1**
-- Our branch choice is: **Branch 1**
-- The difficulty level is: **Normal**
+- Our branch choice is: **Branch 1 and Branch 2**
+- The difficulty level is: **Enhanced**
 
 As for Option 2, our topic background specification can be found in [background-specification.md](background-specification.md).
 

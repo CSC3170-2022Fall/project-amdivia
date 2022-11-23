@@ -19,7 +19,7 @@ Our team consists of the following members, listed in the table below (the team 
 | Student ID | Student Name | GitHub Account (in Email) |
 | ---------- | ------------ | ------------------------- |
 | 120090175  | 彭乔羽 🚩    | 120090175@link.cuhk.edu.cn        |
-| 120090661  | 邓毅轩         | 120090661@link.cuhk.edu.cn            |
+| 120090661  | 邓毅轩         | 939681959@qq.com            |
 | 120090443  | 周昱潇         | 120090443@link.cuhk.edu.cn            |
 | 120090737  | 刘宇轩         | 120090737@link.cuhk.edu.cn            |
 | 120040088  | 王熹           | 120040088@link.cuhk.edu.cn            |

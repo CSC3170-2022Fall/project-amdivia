@@ -1,13 +1,9 @@
 import numpy as np
 import random as rd
-"""
-TO DO LIST
-insert the time interval into the process list in order
-random data generator
-"""
+import pandas as pd
 
-SIMULATION_RANGE = 5
-SIMULATION_TIMES = 300
+SIMULATION_RANGE = 10
+SIMULATION_TIMES = 1000
 
 
 class chip:
@@ -57,7 +53,6 @@ def allocate_package (package):
             for chip_info in chip_full_list:
                 if chip_info.type == chip.type:
                     oplist = chip_info.oplist
-            
             # retrieve the valid plant (sql)
             for op in oplist:
                 plant_list = []
@@ -81,17 +76,18 @@ def allocate_package (package):
                         break
                 if left_time > 0:
                     choose_time = left_time + last_time - 1
-     #           if i == 0: print(choose_time)
                 insert_time(plant.process_list, choose_time, choose_time + op_time)
                 stack.append((plant.process_list, choose_time, choose_time + op_time))
                 latest_time = max(latest_time, choose_time + op_time) 
-                if i == 20: print(plant.ID, plant.process_list, latest_time)
+              #  if i == 20: print(plant.ID, plant.process_list, latest_time)
                 
         for list, x, y in stack:
             delete_time(list, x, y)
         time_distribution.append(latest_time)
         
     time_distribution.sort()
+    
+    return time_distribution  # this line is to find the time distribution of simulation
     
     user_latest_time = 0
     for chip in package:
@@ -112,10 +108,19 @@ def allocate_package (package):
             return 1 - i / len(time_distribution)
     return 0     
 
-chip_full_list = [chip(1, [1, 2, 3]), chip(2, [1, 4, 3])]
-plant_full_list = [plant(1, 1, 30, []), plant(2, 2, 50, []), plant(3, 3, 70, []), plant(4, 4, 90, [])]
-package_full_list = [ [ chip_in_package(1, 110, [2, 2, 3], [1,2,3]), chip_in_package(2, 350, [6, 0, 5], [1, 4, 3]) ], [ chip_in_package(1, 200, [20,20,20], [1,2,3]) ] ]
+chip_full_list = []
+plant_full_list = []
+package_full_list = [[chip_in_package(1, 1000, [1000,2000,3000], [2,7,13])]] # chip 1, amount = 1000, start 3 operations at [1000,2000,3000] respectively, in plant [2,7,13].
+# chip_full_list = [chip(1, [1, 2, 3]), chip(2, [1, 4, 3])]
+# plant_full_list = [plant(1, 1, 30, []), plant(2, 2, 50, []), plant(3, 3, 70, []), plant(4, 4, 90, [])]
+# package_full_list = [ [ chip_in_package(1, 110, [2, 2, 3], [1,2,3]), chip_in_package(2, 350, [6, 0, 5], [1, 4, 3]) ], [ chip_in_package(1, 200, [20,20,20], [1,2,3]) ] ]
+d1 = pd.read_csv("./info_plant.csv")
+for i in range(200):
+    plant_full_list.append(plant(i, d1["type"][i], d1["capacity"][i], eval(str(d1["status"][i])) ))
+d2 = pd.read_csv("./info_chip.csv")
+for i in range(12):
+    chip_full_list.append(chip(d2["type"][i], eval(d2["oplist"][i])))
 
 for package in package_full_list:
     print(allocate_package(package))
-    
+

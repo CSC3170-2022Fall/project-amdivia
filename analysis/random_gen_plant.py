@@ -23,8 +23,8 @@ df_factory['status'] = factory_status
 #print(df_factory)
 ##-------------------------------------------------------------------
 
-#-----------------------outuput to csv--------------------------------
-df_factory.to_csv('C:/Users/26741/Desktop/study/hw/CSC3170/program/info.csv') # **PLEASE REPLACE TO YOUR OWN PATH!!**
+#-----------------------output to csv--------------------------------
+df_factory.to_csv('./info_plant.csv') # **PLEASE REPLACE TO YOUR OWN PATH!!**
 #-------------------------------------------------------------------------
 
 #---------------- Example to use csv --------------------

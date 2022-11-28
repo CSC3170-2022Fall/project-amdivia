@@ -20,7 +20,8 @@ SIMULATION_RANGE = 10
 SIMULATION_TIMES = 1000
 ```
 
-simulation 会取第 x 个能用的位置，$x \in [1, SIMULATION_RANGE]$ （原来 github 的 readme 不支持 latex 我现在才知道）
+
+simulation 会取第 x 个能用的位置， $x \in [1, SIMULATION$ \_ $RANGE]$ 
 
 SIMULATION_TIMES 是模拟的次数
 

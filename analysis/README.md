@@ -20,7 +20,7 @@ SIMULATION_RANGE = 10
 SIMULATION_TIMES = 1000
 ```
 
-simulation 会取第 x 个能用的位置，$x \in [1, SIMULATION_RANGE]$
+simulation 会取第 x 个能用的位置，$x \in [1, SIMULATION_RANGE]$ （原来 github 的 readme 不支持 latex 我现在才知道）
 
 SIMULATION_TIMES 是模拟的次数
 
@@ -48,4 +48,6 @@ delete_time (list, x, y)
 
 以及，csv 文件里输出的 list 是带引号的 string 类型，pandas 输出的时候有什么办法让它不带引号吗，不然在 analysis.py 里还要去写一个 eval(str(oplist)) 来读入 list。<del>虽然也能解决这个问题但是好蠢</del>
 
-<del>等会儿就去给 analysis.py 写 comment </del>
+comment 写完啦！
+
+如果想读代码的话，强烈建议把 class 里的内容截图放另一个屏幕上对照着看，<del>谁记得住那么多设定啊！</del>

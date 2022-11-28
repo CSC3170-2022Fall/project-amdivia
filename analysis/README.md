@@ -47,3 +47,5 @@ delete_time (list, x, y)
 或许可以去根据 time_distribution 的返回值去画个图？<del>还能用来水report</del>
 
 以及，csv 文件里输出的 list 是带引号的 string 类型，pandas 输出的时候有什么办法让它不带引号吗，不然在 analysis.py 里还要去写一个 eval(str(oplist)) 来读入 list。<del>虽然也能解决这个问题但是好蠢</del>
+
+<del>等会儿就去给 analysis.py 写 comment </del>

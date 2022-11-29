@@ -72,10 +72,7 @@ def allocate_package (package):
             last_time = 0           # In real simulation, it should be "current time"
             for op in oplist:
                 # retrieve the valid plant for each operation
-                plant_list = []
-                for plant in plant_full_list:
-                    if op in plant.type:
-                        plant_list.append(plant)
+                plant_list = op_to_plant[op]
                         
                 plant = rd.choice(plant_list) # randomly choose a valid plant
                 
@@ -95,7 +92,7 @@ def allocate_package (package):
                 """
              #   """ mode 3
                 op_time = (int)(math.ceil(((chip.number - 1) // plant.capacity + 1)*op*5*plant.rate/10))
-             #   """
+            #    """
                 """ mode 4 
                 op_time = ((chip.number - 1) // plant.capacity + 1)
                 """

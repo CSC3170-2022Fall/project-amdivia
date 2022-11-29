@@ -3,6 +3,9 @@ import pandas as pd
 import random
 ##-------------------- DATA Generation----------------------------------
 oplist = [[1, 2, 3], [1, 2, 4], [1, 2, 5], [1, 3, 5], [1, 4, 5], [2, 4, 5], [1, 2, 4, 5], [1, 3, 4, 5], [1, 2, 3, 4, 5], [2, 5], [3, 5], [2, 4]]
+for list in oplist:
+    for j in range(len(list)):
+        list[j] -= 1
 type = []
 for i in range(12):
     type.append(i)

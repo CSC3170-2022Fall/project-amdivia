@@ -3,9 +3,11 @@ import random as rd
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+import math
 
 SIMULATION_RANGE = 10
 SIMULATION_TIMES = 5000
+OPERATION_TYPE = 5
 
 
 class chip:
@@ -49,7 +51,11 @@ def delete_time (list, x, y):     # similar as insert_time but delete an existed
 def allocate_package (package):
     global chip_full_list # the list records all chip information
     global plant_full_list # the list records all plant information
-        
+    global op_to_plant
+    for plant in plant_full_list:
+        for type in plant.type:
+            op_to_plant[type].append(plant)
+            
     time_distribution = [] # time_distribution records for the time every simulation is done.
     for i in range(SIMULATION_TIMES):
         stack = [] # record the interval added temporarily in simulation part.
@@ -62,22 +68,39 @@ def allocate_package (package):
             for chip_info in chip_full_list:
                 if chip_info.type == chip.type:
                     oplist = chip_info.oplist
-                    
+            
+            last_time = 0           # In real simulation, it should be "current time"
             for op in oplist:
                 # retrieve the valid plant for each operation
                 plant_list = []
                 for plant in plant_full_list:
-                    if plant.type == op:
+                    if op in plant.type:
                         plant_list.append(plant)
                         
                 plant = rd.choice(plant_list) # randomly choose a valid plant
+                
+                """ mode 1
+                op_time = ((chip.number - 1) // plant.capacity + 1)
                 if last_plant != None:
-                    op_time = ((chip.number - 1) // plant.capacity + 1)*op*5*plant.rate/10+((last_plant.loc1-plant.loc1)**2+(last_plant.loc2-plant.loc2)**2)**0.5;  # calculate the operation time in the plant, need to ensure number > 0 (otherwise why you buy it?)
+                    op_time = (int)(math.ceil(((chip.number - 1) // plant.capacity + 1)*op*5*plant.rate/10+((last_plant.loc1-plant.loc1)**2+(last_plant.loc2-plant.loc2)**2)**0.5))  # calculate the operation time in the plant, need to ensure number > 0 (otherwise why you buy it?)
                 else:
-                    op_time = ((chip.number - 1) // plant.capacity + 1)*op*5*plant.rate/10
+                    op_time = (int)(math.ceil(((chip.number - 1) // plant.capacity + 1)*op*5*plant.rate/10))
+                """
+                """ mode 2
+                op_time = ((chip.number - 1) // plant.capacity + 1)
+                if last_plant != None:
+                    op_time = (int)(math.ceil(((chip.number - 1) // plant.capacity + 1)+((last_plant.loc1-plant.loc1)**2+(last_plant.loc2-plant.loc2)**2)**0.5))  # calculate the operation time in the plant, need to ensure number > 0 (otherwise why you buy it?)
+                else:
+                    op_time = ((chip.number - 1) // plant.capacity + 1)
+                """
+             #   """ mode 3
+                op_time = (int)(math.ceil(((chip.number - 1) // plant.capacity + 1)*op*5*plant.rate/10))
+             #   """
+                """ mode 4 
+                op_time = ((chip.number - 1) // plant.capacity + 1)
+                """
                 last_plant = plant
                 # find the left_time-th valid time to be the start time of the operation
-                last_time = 0           # In real simulation, it should be "current time"
                 left_time = rd.randint(1, SIMULATION_RANGE)
                 choose_time = -1        # The time we finally choose
                 for x, y in plant.process_list:
@@ -91,7 +114,7 @@ def allocate_package (package):
                     
                 if left_time > 0: # if there is still left_time after finding all intervals
                     choose_time = left_time + last_time - 1
-
+                last_time = choose_time
                 insert_time(plant.process_list, choose_time, choose_time + op_time)
                 # the simulation inserts the time interval temporarily, it should be removed later.
                 stack.append((plant.process_list, choose_time, choose_time + op_time)) 
@@ -130,6 +153,7 @@ def allocate_package (package):
 
 chip_full_list = []
 plant_full_list = []
+op_to_plant = {i:[] for i in range(OPERATION_TYPE)}
 # chip 1, amount = 1000, start 3 operations at [1000,2000,3000] respectively, in plant [2,7,13]
 # you can modify the package_full_list. The later two arguement don't affect the time_distribution(since that's user's decision)
 package_full_list = [[chip_in_package(1, 1000, [1000,2000,3000], [2,7,13])]] 
@@ -144,16 +168,17 @@ fig = sns.boxplot()
 for data in range(1,4):
     d1 = pd.read_csv("./info_plant"+str(data)+".csv")
     for i in range(200):
-        plant_full_list.append(plant(i, d1["type"][i], d1["capacity"][i], eval(str(d1["status"][i])), d1["loc1"][i], d1["loc2"][i], d1["rate"][i]))
+        plant_full_list.append(plant(i, eval(str(d1["type"][i])), d1["capacity"][i], eval(str(d1["status"][i])), d1["loc1"][i], d1["loc2"][i], d1["rate"][i]))
     d2 = pd.read_csv("./info_chip.csv")
     for i in range(12):
         chip_full_list.append(chip(d2["type"][i], eval(d2["oplist"][i])))
    # print
     for package in package_full_list:
         dis = allocate_package(package)
+    print(dis)   
     dis = np.array(dis)
     x,y=np.unique(dis,return_counts=True)
     fig=sns.kdeplot(dis,legend=str(data))
     plt.legend(str(data))
-    #sns.displot(dis,bins=len(y),kde=True)
+   # sns.displot(dis,bins=len(y),kde=True)
 plt.show()

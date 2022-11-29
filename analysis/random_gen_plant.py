@@ -3,11 +3,17 @@ import pandas as pd
 import random
 ##-------------------- DATA Generation----------------------------------
 capacity = np.random.randint(50,1000,size=200) # with unit chip
-type = np.random.randint(0,5,size=200) # type of machine
+type = []
+for i in range(200):
+    list = random.sample([0, 1, 2, 3, 4], random.randint(1, 3))
+    list.sort()
+    type.append(list)
+#type = np.random.randint(0,5,size=200) # type of machine
 loc1 = np.random.randint(1,1000,size=200)
 loc2 = np.random.randint(1,1000,size=200) #generate location,used to calculate the transformation time, yet it can be implicit in the seperate processing time of each operation
 rate = np.random.randint(1,11,size=200) # diff rate
-df_factory = pd.DataFrame(np.array([capacity,type,loc1,loc2,rate]).T, columns=['capacity','type','loc1','loc2','rate'])
+df_factory = pd.DataFrame(np.array([capacity,loc1,loc2,rate]).T, columns=['capacity','loc1','loc2','rate'])
+df_factory['type'] = type
 operation = [[[1,2],20],[[1,3],66],[[2,2],40],[[2,3],35],[[3,2],29]] # five type, [start op, # of op, processing time] the processing time need to be adjusted
 for k in range(1,4):
     factory_status = [] # occupy will be store as [start_time,finish_time],the time must be in ascending order

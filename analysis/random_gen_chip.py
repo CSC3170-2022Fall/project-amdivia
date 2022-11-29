@@ -9,7 +9,6 @@ for i in range(12):
     
 df_factory = pd.DataFrame(np.array([type]).T, columns=['type'])
 df_factory["oplist"] = oplist
-
 #print(factory_status) you can print to see the data type and shape
 #print(df_factory)
 ##-------------------------------------------------------------------
@@ -27,7 +26,6 @@ df_factory.to_csv('./info_chip.csv') # **PLEASE REPLACE TO YOUR OWN PATH!!**
 
 
                 
-
 
 
 

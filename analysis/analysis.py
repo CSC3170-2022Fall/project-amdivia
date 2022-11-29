@@ -1,9 +1,11 @@
 import numpy as np
 import random as rd
 import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 SIMULATION_RANGE = 10
-SIMULATION_TIMES = 1000
+SIMULATION_TIMES = 5000
 
 
 class chip:
@@ -12,11 +14,14 @@ class chip:
         self.oplist = oplist    # a chip type corresponds to an oplist
 
 class plant:
-    def __init__ (self, plant_ID, op_type, capacity, process_list):
+    def __init__ (self, plant_ID, op_type, capacity, process_list,loc1,loc2,rate):
         self.ID = plant_ID
         self.type = op_type
         self.capacity = capacity # capacity means the amount of work can be done in certain unit time, e.g. 100 chips / day
         self.process_list = process_list # [(20, 30),(40, 50)] means the plant has two time intervals occupied.
+        self.loc1 = loc1
+        self.loc2 = loc2
+        self.rate = rate
 
 class chip_in_package:                  # package is a list of chip_in_package
     def __init__ (self, chip_type, chip_number, time_list, plant_info):
@@ -53,6 +58,7 @@ def allocate_package (package):
         for chip in package:
             # find the oplist for this chip
             oplist = []
+            last_plant = None
             for chip_info in chip_full_list:
                 if chip_info.type == chip.type:
                     oplist = chip_info.oplist
@@ -65,8 +71,11 @@ def allocate_package (package):
                         plant_list.append(plant)
                         
                 plant = rd.choice(plant_list) # randomly choose a valid plant
-                op_time = (chip.number - 1) // plant.capacity + 1;  # calculate the operation time in the plant, need to ensure number > 0 (otherwise why you buy it?)
-                
+                if last_plant != None:
+                    op_time = ((chip.number - 1) // plant.capacity + 1)*op*5*plant.rate/10+((last_plant.loc1-plant.loc1)**2+(last_plant.loc2-plant.loc2)**2)**0.5;  # calculate the operation time in the plant, need to ensure number > 0 (otherwise why you buy it?)
+                else:
+                    op_time = ((chip.number - 1) // plant.capacity + 1)*op*5*plant.rate/10
+                last_plant = plant
                 # find the left_time-th valid time to be the start time of the operation
                 last_time = 0           # In real simulation, it should be "current time"
                 left_time = rd.randint(1, SIMULATION_RANGE)
@@ -131,13 +140,20 @@ package_full_list = [[chip_in_package(1, 1000, [1000,2000,3000], [2,7,13])]]
 # package_full_list = [ [ chip_in_package(1, 110, [2, 2, 3], [1,2,3]), chip_in_package(2, 350, [6, 0, 5], [1, 4, 3]) ], [ chip_in_package(1, 200, [20,20,20], [1,2,3]) ] ]
 
 # read from the data
-d1 = pd.read_csv("./info_plant.csv")
-for i in range(200):
-    plant_full_list.append(plant(i, d1["type"][i], d1["capacity"][i], eval(str(d1["status"][i])) ))
-d2 = pd.read_csv("./info_chip.csv")
-for i in range(12):
-    chip_full_list.append(chip(d2["type"][i], eval(d2["oplist"][i])))
-
-# print
-for package in package_full_list:
-    print(allocate_package(package))
+fig = sns.boxplot()
+for data in range(1,4):
+    d1 = pd.read_csv("./info_plant"+str(data)+".csv")
+    for i in range(200):
+        plant_full_list.append(plant(i, d1["type"][i], d1["capacity"][i], eval(str(d1["status"][i])), d1["loc1"][i], d1["loc2"][i], d1["rate"][i]))
+    d2 = pd.read_csv("./info_chip.csv")
+    for i in range(12):
+        chip_full_list.append(chip(d2["type"][i], eval(d2["oplist"][i])))
+   # print
+    for package in package_full_list:
+        dis = allocate_package(package)
+    dis = np.array(dis)
+    x,y=np.unique(dis,return_counts=True)
+    fig=sns.kdeplot(dis,legend=str(data))
+    plt.legend(str(data))
+    #sns.displot(dis,bins=len(y),kde=True)
+plt.show()

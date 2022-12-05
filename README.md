@@ -43,3 +43,6 @@ After thorough discussion, our team made the choice and the specification inform
 ## Project Abstract
 
 <!-- TODO -->
+Our system provides users with a convenient platform to purchase chips, and is committed to reducing users' money and time costs and improving the production capacity and efficiency of the chip industry. Our project can bring a qualitative leap to the industry.
+
+To accomplish our vision, we implemented three separate systems. First of all, we will provide users with a simple, elegant and easy-to-use web interface. Users can obtain intimate and customized services on the website. Besides, our accurate and powerful data analysis system can provide a solid technical foundation for this service. In addition, our independent and safe banking system guarantees the stability and timeliness of transactions.

@@ -46,3 +46,40 @@ After thorough discussion, our team made the choice and the specification inform
 Our system provides users with a convenient platform to purchase chips, and is committed to reducing users' money and time costs and improving the production capacity and efficiency of the chip industry. Our project can bring a qualitative leap to the industry.
 
 To accomplish our vision, we implemented three separate systems. First of all, we will provide users with a simple, elegant and easy-to-use web interface. Users can obtain intimate and customized services on the website. Besides, our accurate and powerful data analysis system can provide a solid technical foundation for this service. In addition, our independent and safe banking system guarantees the stability and timeliness of transactions.
+
+## Progress Report
+
+### 1. Trading System Front-End
+
+We designed and produced a robust, elegant and easy-to-use frontend interface. Aiming to provide the user with best user experience and productivity.
+
+The front-end interface has mainly 4 pages:
+1.	Login page
+2.	Order list page
+3.	Order making page
+4.	Factory info page
+
+In the login page, the user could login with user id and password. After login, we can link user id with the orders made by the user and fill up the order list page. The order list page is a page that shows all the processing orders. If the user wishes to make a new order, he/she could first go to the factory info page and look up the detailed information of a specific factory. Including name, location, number of machines, types of chips that could be produced by the machines in the factory, and more. With the knowledge of factory details, user could select from a range of dropdown lists. The user designed chip ordering plan will be send to the backend data analysis module and receive a score towards the plan. If the plan could be executed, the frontend interface will tell the user to confirm the plan and place the order, then the user will go back to the order list page. Otherwise, the user will be prompted with an error message that ask for a redesign of ordering plan.
+
+Finite state machine diagram:
+![machine_diagram.png](res/machine_diagram.png)
+
+### 2. Trading System Back-End
+
+Firstly, a simple ER diagram is designed based on the requirements and some elaboration provided by the project guideline:
+![er_diagram.png](res/er_diagram.png)
+
+We assume the costumer will provide an order with different sets of chips and different volumes. Then, the system, which is designed by the team, will provide a score for this ordering decisions. After that, this order will be executed by the system where relevant information will be stored in our database. Lastly, all response and feedback will be replied back by the back-end system to the web to display all necessary information of this order.
+
+We decide to use MySQL for this project. The next priority is to write a connector that connects MySQL and backend system (python based). Fortunately, MySQL-python connector can perform the job really well. So, we first wrote a simple script to create all tables provided by the ER-diagram above:
+![er_diagram_code.png](res/er_diagram_code.png)
+
+### 3. Target Analysis
+
+A data analysis team is set up to analyze the user's input production policy and return the score (KPI) for that policy. This team will further study the influence of each variable on the output KPI.
+
+Until now, our data analysis team generated the distribution of KPIs based on random simulation and calculated the KPI for input production policy. The programs are written in python and are expected to be slightly modified to fit the front and back end. 
+
+Our random simulation algorithm involves a  utilization of Kernel Density Estimation (KDE) to estimate the approximate distribution and transform it into a continuous distribution. The score is denoted as $1 - CDF$, which indicates the percentage rank of this user's decision plan among all other plans for the same package.
+
+We are now in the process of interfacing our algorithm with the back and front end. And we will study the influence of each variable on the output KPI later.

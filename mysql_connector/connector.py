@@ -19,5 +19,5 @@ mydb = mysql.connector.connect(
 
 print(mydb)
 mycursor = mydb.cursor()
-create_tables(mycursor)
+# create_tables(mycursor)
 

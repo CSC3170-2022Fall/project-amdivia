@@ -1,4 +1,5 @@
-from flask import Flask
+from flask import Flask, request
+import json
 
 
 app = Flask(__name__)
@@ -11,7 +12,7 @@ def hello():
 def login():
     data = request.get_json()
     if data is None or 'name' not in data or 'password' not in data:
-        return stand_response_error('must post with name/password params')
+        return 'must post with name/password params'
     name = data['name']
     password = data['password']
     return name + password

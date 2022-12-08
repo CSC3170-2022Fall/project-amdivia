@@ -1,5 +1,5 @@
 import mysql.connector  
-
+import pandas as pd
 
 def create_tables(mycursor):
     mycursor.execute("CREATE TABLE AMDVIA.chip (chip_ID INT auto_increment NOT NULL,chip_type varchar(100) NOT NULL,operation_sequence varchar(100) NOT NULL,cost double NOT NULL,CONSTRAINT chip_PK PRIMARY KEY (chip_ID))")
@@ -10,6 +10,21 @@ def create_tables(mycursor):
     mycursor.execute("CREATE TABLE AMDVIA.`order` (order_ID INT auto_increment NOT NULL,status bool NOT NULL,package_ID int NOT NULL,actual_money double NOT NULL,order_time varchar(100) NOT NULL,decision_ID int NOT NULL,CONSTRAINT order_PK PRIMARY KEY (order_ID))")
     mycursor.execute("CREATE TABLE AMDVIA.operation (operation_ID INT auto_increment NOT NULL,operation_type varchar(100) NOT NULL,machine_ID INT NOT NULL,time_cost varchar(100) NOT NULL,money_cost double NOT NULL,CONSTRAINT operation_PK PRIMARY KEY (operation_ID))")
 
+def insert_chip(mycursor):
+   df = pd.read_csv('/Users/georgewangxi/Documents/2022 Fall/csc3170/Proj/project-amdvia/mysql_connector/chip.csv')
+   for row in df.iterrows():
+       sql = "INSERT INTO AMDVIA.chip (chip_type, operation_sequence, cost) VALUES (%s, %s, %s)"
+       val = (row['chip_type'], row['oplist'], row['cost'])
+       mycursor.execute(sql, val)
+       mydb.commit()
+   print(df)
+
+def read_chip(mycursor):
+    mycursor.execute("SELECT * FROM AMDVIA.chip")
+    myresult = mycursor.fetchall()
+    for x in myresult:
+        print(x)
+        
 mydb = mysql.connector.connect(
   host="localhost",
   user="root",
@@ -20,4 +35,6 @@ mydb = mysql.connector.connect(
 print(mydb)
 mycursor = mydb.cursor()
 # create_tables(mycursor)
+# insert_chip(mycursor)
+read_chip(mycursor)
 

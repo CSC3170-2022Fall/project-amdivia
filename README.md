@@ -26,7 +26,7 @@ Our team consists of the following members, listed in the table below (the team 
 | 120090721  | 熊一鸣         | 120090721@link.cuhk.edu.cn            |undo|
 | 120010035  | 黄熹正         | 120010035@link.cuhk.edu.cn            |undo|
 | 120010061  | 林泽昕         | 120010061@link.cuhk.edu.cn            |webDrag0n|
-| 120090638  | 孙绍强         | 120090638@link.cuhk.edu.cn            |undo|
+| 120090638  | 孙绍强         | 120090638@link.cuhk.edu.cn            |ShaoqiangSun|
 | 120090673  | 曲恒毅         | qulend@163.com            |undo|
 
 ## Project Specification

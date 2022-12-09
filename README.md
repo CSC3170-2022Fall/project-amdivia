@@ -80,6 +80,12 @@ A data analysis team is set up to analyze the user's input production policy and
 
 Until now, our data analysis team generated the distribution of KPIs based on random simulation and calculated the KPI for input production policy. The programs are written in python and are expected to be slightly modified to fit the front and back end. 
 
-Our random simulation algorithm involves a  utilization of Kernel Density Estimation (KDE) to estimate the approximate distribution and transform it into a continuous distribution. The score is denoted as $1 - CDF$, which indicates the percentage rank of this user's decision plan among all other plans for the same package.
+Our random simulation algorithm involves a  utilization of Kernel Density Estimation (KDE) to estimate the approximate distribution and transform it into a continuous distribution. The score is denoted as $1 - CDF$, which indicates the percentage rank of this user's decision plan among all other plans for the same package, as shown below:
+<figure class="half">
+    <img src="res/curve_1.png" width="290">
+    <img src="res/curve_2.png" width="290">
+</figure>
+
+The left figure is the $KDE$ for expense, and the right figure is the $KDE$ for processing time. We test our method on three different level of occupation situation among 200 factories. 
 
 We are now in the process of interfacing our algorithm with the back and front end. And we will study the influence of each variable on the output KPI later.

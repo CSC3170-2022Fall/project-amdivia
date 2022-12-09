@@ -14,7 +14,28 @@ loc2 = np.random.randint(1,1000,size=200) #generate location,used to calculate t
 rate = np.random.randint(1,11,size=200) # diff rate
 df_factory = pd.DataFrame(np.array([capacity,loc1,loc2,rate]).T, columns=['capacity','loc1','loc2','rate'])
 df_factory['type'] = type
-operation = [[[1,2],20],[[1,3],66],[[2,2],40],[[2,3],35],[[3,2],29]] # five type, [start op, # of op, processing time] the processing time need to be adjusted
+# operation = [[[1,2],20],[[1,3],66],[[2,2],40],[[2,3],35],[[3,2],29]] # five type, [start op, # of op, processing time] the processing time need to be adjusted
+# expense
+marked_type = []
+type_expense = []
+expense = []
+for i in range(200):
+    tmp_type = type[i]
+    # make sure that same type correspending to same expense
+    try:
+        ind = marked_type.index(tmp_type)
+        expense.append(type_expense[ind])
+    except:
+        tmp_l = []
+        for t in tmp_type:
+            # each operation correspending to a random expense
+            # random range(100, 200)
+            tmp_l.append(np.random.randint(100,200))
+        type_expense.append(tmp_l)
+        expense.append(tmp_l)
+        marked_type.append(tmp_type)
+df_factory['expense'] = expense
+
 for k in range(1,4):
     factory_status = [] # occupy will be store as [start_time,finish_time],the time must be in ascending order
     for i in range(200):
@@ -28,6 +49,7 @@ for k in range(1,4):
         factory_status.append(status) # if period=0, an empty list will be assigned to this factory
     df_factory['status'] = factory_status
     df_factory.to_csv('./info_plant'+str(k)+'.csv')
+
 #print(factory_status) you can print to see the data type and shape
 #print(df_factory)
 ##-------------------------------------------------------------------

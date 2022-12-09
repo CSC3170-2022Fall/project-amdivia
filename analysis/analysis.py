@@ -16,9 +16,10 @@ class chip:
         self.oplist = oplist    # a chip type corresponds to an oplist
 
 class plant:
-    def __init__ (self, plant_ID, op_type, capacity, process_list,loc1,loc2,rate):
+    def __init__ (self, plant_ID, op_type, op_expense, capacity, process_list,loc1,loc2,rate):
         self.ID = plant_ID
         self.type = op_type
+        self.expense = op_expense
         self.capacity = capacity # capacity means the amount of work can be done in certain unit time, e.g. 100 chips / day
         self.process_list = process_list # [(20, 30),(40, 50)] means the plant has two time intervals occupied.
         self.loc1 = loc1
@@ -32,6 +33,12 @@ class chip_in_package:                  # package is a list of chip_in_package
         self.timelist = time_list        # start_time for each operation. The length of it is equal to which of oplist 
         self.plant = plant_info          # it's a list, the aimed plant for each operation
         
+class consumer: # need consumber's loc
+    def __init__ (self, package, loc1, loc2):
+        self.package = package
+        self.loc1 = loc1
+        self.loc2 = loc2
+
 def insert_time (list, x, y):       # add (x, y) interval into the list, and keep it in order
     for i in range(len(list)):
         if list[i][1] > x:
@@ -48,7 +55,8 @@ def delete_time (list, x, y):     # similar as insert_time but delete an existed
             list.pop(i)
             break
 
-def allocate_package (package):
+# time
+def allocate_package_time (package):
     global chip_full_list # the list records all chip information
     global plant_full_list # the list records all plant information
     global op_to_plant
@@ -148,13 +156,68 @@ def allocate_package (package):
             return 1 - i / len(time_distribution)
     return 0     
 
+
+# expense
+def allocate_package_expense(package, consumer):
+    global op_to_plant
+    for plant in plant_full_list:
+        for type in plant.type:
+            op_to_plant[type].append(plant)
+
+    expense_distribution = [] # expense_distribution records for the expense every simulation is done.
+    for i in range(SIMULATION_TIMES):
+        package = np.random.permutation(package) # randomize the order of chip selection.
+        total_money = 0 # record the total expense of a package for one simulation
+        for chip in package:
+            # find the oplist for this chip
+            oplist = []
+            last_plant = None
+            for chip_info in chip_full_list:
+                if chip_info.type == chip.type:
+                    oplist = chip_info.oplist
+
+            chip_money = 0
+            for op in oplist:
+                # retrieve the valid plant for each operation
+                plant_list = op_to_plant[op]
+                plant = rd.choice(plant_list) # randomly choose a valid plant
+
+                # find the correspending money of this op
+                for j in range(len(plant.type)):
+                    if plant.type[j] == op:
+                        m = j
+                        break
+                unit_money = plant.expense[m]
+                # plant operation money: chip num*expense
+                op_money = math.ceil(chip.number - 1) * unit_money
+                # transpory money
+                if last_plant == None:
+                    trans_money = 0
+                else:
+                    # trans_money = 3 * distance
+                    trans_money = (((last_plant.loc1 - plant.loc1)**2+(last_plant.loc2 - plant.loc2))**0.5) * 3
+                chip_money = chip_money + op_money + trans_money
+                last_plant = plant # update last plant
+            # last plant to consumer
+            trans_money = (((last_plant.loc1 - consumer.loc1)**2+(last_plant.loc2 - consumer.loc2))**0.5) * 3
+            chip_money += trans_money
+
+            # add this type chip to total money of this simulation
+            total_money += chip_money
+        expense_distribution.append(total_money)
+    
+    expense_distribution.sort
+    return expense_distribution
+
+    
+
 chip_full_list = []
 plant_full_list = []
 op_to_plant = {i:[] for i in range(OPERATION_TYPE)}
 # chip 1, amount = 1000, start 3 operations at [1000,2000,3000] respectively, in plant [2,7,13]
 # you can modify the package_full_list. The later two arguement don't affect the time_distribution(since that's user's decision)
 package_full_list = [[chip_in_package(1, 1000, [1000,2000,3000], [2,7,13])]] 
-
+me = consumer(package_full_list, np.random.randint(1,1000), np.random.randint(1,1000))    # add a consumer class 
 # some small data, has score > 0
 # chip_full_list = [chip(1, [1, 2, 3]), chip(2, [1, 4, 3])]
 # plant_full_list = [plant(1, 1, 30, []), plant(2, 2, 50, []), plant(3, 3, 70, []), plant(4, 4, 90, [])]
@@ -165,13 +228,14 @@ fig = sns.boxplot()
 for data in range(1,4):
     d1 = pd.read_csv("./info_plant"+str(data)+".csv")
     for i in range(200):
-        plant_full_list.append(plant(i, eval(str(d1["type"][i])), d1["capacity"][i], eval(str(d1["status"][i])), d1["loc1"][i], d1["loc2"][i], d1["rate"][i]))
+        plant_full_list.append(plant(i, eval(str(d1["type"][i])), eval(str(d1["expense"][i])), d1["capacity"][i], eval(str(d1["status"][i])), d1["loc1"][i], d1["loc2"][i], d1["rate"][i]))
     d2 = pd.read_csv("./info_chip.csv")
     for i in range(12):
         chip_full_list.append(chip(d2["type"][i], eval(d2["oplist"][i])))
    # print
-    for package in package_full_list:
-        dis = allocate_package(package)
+    for package in me.package:
+        # dis = allocate_package_time(package)
+        dis = allocate_package_expense(package, me)
     print(dis)   
     dis = np.array(dis)
     x,y=np.unique(dis,return_counts=True)

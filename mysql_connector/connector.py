@@ -11,7 +11,7 @@ def create_tables(mycursor):
     mycursor.execute("CREATE TABLE AMDVIA.plant (plant_ID INT NOT NULL, CONSTRAINT plant_PK PRIMARY KEY (plant_ID), plant_name varchar(255) NOT NULL, capacity INT NOT NULL, process_list JSON NOT NULL, processing_rate INT NOT NULL, loc1 INT NOT NULL, loc2 INT NOT NULL)")
 
 def insert_chip(mycursor):
-    df = pd.read_csv('chip.csv')
+    df = pd.read_csv('/home/webdrag0n/csc3170/project-amdvia/fake_data/chip.csv')
     for i in range(df.shape[0]):
         tmp_list = eval(df["operation_sequence"][i])
         keys = [str(x) for x in range(len(tmp_list))]
@@ -29,11 +29,41 @@ def read_chip(mycursor):
     # print(myresult)
     for x in myresult:
         print(x)
-        
+
+def insert_consumer(mycursor):
+    df = pd.read_csv('/home/webdrag0n/csc3170/project-amdvia/fake_data/consumer.csv')
+    for i in range(df.shape[0]):
+        sql = "INSERT INTO AMDVIA.consumer(consumer_ID, consumer_password, first_name, second_name, bank_ID, loc1, loc2) VALUES (%s, %s, '%s', '%s', %s, %s, %s)" % (df['consumer_id'][i], df['consumer_password'][i], df['first_name'][i], df['second_name'][i], df['bank_id'][i], df['loc1'][i], df['loc2'][i])
+        mycursor.execute(sql)
+        mydb.commit()     
+
+
+def insert_operation(mycursor):
+    df = pd.read_csv('/home/webdrag0n/csc3170/project-amdvia/fake_data/operation.csv')
+    for i in range(df.shape[0]):
+        tmp_list = eval(df["plant_list"][i])
+        keys = [str(x) for x in range(len(tmp_list))]
+        list_json = dict(zip(keys, tmp_list))
+        str_json = json.dumps(list_json)  
+        sql = "INSERT INTO AMDVIA.operation(operation_ID, time_cost, money_cost, plant_list) VALUES (%s, %s, %s, '%s')" % (df['operation_id'][i], df['time_cost'][i], df['money_cost'][i], str(str_json))
+        mycursor.execute(sql)
+        mydb.commit()
+
+def insert_plant(mycursor):
+    df = pd.read_csv('/home/webdrag0n/csc3170/project-amdvia/fake_data/plant.csv')
+    for i in range(df.shape[0]):
+        tmp_list = eval(df["process_list"][i])
+        keys = [str(x) for x in range(len(tmp_list))]
+        list_json = dict(zip(keys, tmp_list))
+        str_json = json.dumps(list_json)  
+        sql = "INSERT INTO AMDVIA.plant(plant_id,plant_name,capacity,process_list,processing_rate,loc1,loc2) VALUES (%s, '%s', %s, '%s', %s, %s, %s)" % (df['plant_id'][i], df['plant_name'][i], df['capacity'][i], str(str_json), df['processing_rate'][i], df['loc1'][i], df['loc2'][i])
+        mycursor.execute(sql)
+        mydb.commit()     
+
 mydb = mysql.connector.connect(
   host="localhost",
   user="root",
-  password="root",
+  password="csc3170",
   database = "AMDVIA",
   auth_plugin='mysql_native_password'
 )
@@ -41,6 +71,9 @@ mydb = mysql.connector.connect(
 print(mydb)
 mycursor = mydb.cursor()
 # create_tables(mycursor)
-insert_chip(mycursor)
-read_chip(mycursor)
+# insert_chip(mycursor)
+# read_chip(mycursor)
+# insert_consumer(mycursor)
+# insert_operation(mycursor)
+# insert_plant(mycursor)
 

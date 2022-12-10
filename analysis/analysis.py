@@ -2,11 +2,12 @@ import numpy as np
 import random as rd
 import pandas as pd
 import seaborn as sns
+from scipy.stats import gaussian_kde
 import matplotlib.pyplot as plt
 import math
 
 SIMULATION_RANGE = 10
-SIMULATION_TIMES = 5000
+SIMULATION_TIMES = 2000
 OPERATION_TYPE = 5
 
 
@@ -16,10 +17,10 @@ class chip:
         self.oplist = oplist    # a chip type corresponds to an oplist
 
 class plant:
-    def __init__ (self, plant_ID, op_type, op_expense, capacity, process_list,loc1,loc2,rate):
+    def __init__ (self, plant_ID, op_type, capacity, process_list,loc1,loc2,rate):
         self.ID = plant_ID
         self.type = op_type
-        self.expense = op_expense
+        # self.expense = op_expense
         self.capacity = capacity # capacity means the amount of work can be done in certain unit time, e.g. 100 chips / day
         self.process_list = process_list # [(20, 30),(40, 50)] means the plant has two time intervals occupied.
         self.loc1 = loc1
@@ -63,12 +64,13 @@ def allocate_package_time (package):
     for plant in plant_full_list:
         for type in plant.type:
             op_to_plant[type].append(plant)
-            
+    cost_distribution = [] # cost_distribution 
     time_distribution = [] # time_distribution records for the time every simulation is done.
     for i in range(SIMULATION_TIMES):
         stack = [] # record the interval added temporarily in simulation part.
-        latest_time = 0 # the latest time all operations are done in the simulation
+        latest_time = [] # the latest time all operations are done in the simulation
         package = np.random.permutation(package) # randomize the order of chip selection.
+        cost = 0
         for chip in package:
             # find the oplist for this chip
             oplist = []
@@ -84,23 +86,25 @@ def allocate_package_time (package):
                         
                 plant = rd.choice(plant_list) # randomly choose a valid plant
                 
-                """ mode 1
-                op_time = ((chip.number - 1) // plant.capacity + 1)
+                #""" mode 1
+                # op_time = ((chip.number - 1) // plant.capacity + 1)
                 if last_plant != None:
                     op_time = (int)(math.ceil(((chip.number - 1) // plant.capacity + 1)*op*5*plant.rate/10+((last_plant.loc1-plant.loc1)**2+(last_plant.loc2-plant.loc2)**2)**0.5))  # calculate the operation time in the plant, need to ensure number > 0 (otherwise why you buy it?)
+                    cost += (int)(math.ceil(((chip.number - 1) // plant.capacity + 1)*op/plant.rate + ((last_plant.loc1-plant.loc1)**2+(last_plant.loc2-plant.loc2)**2)**0.5))
                 else:
                     op_time = (int)(math.ceil(((chip.number - 1) // plant.capacity + 1)*op*5*plant.rate/10))
-                """
-                """ mode 2
+                    cost += (int)(math.ceil(((chip.number - 1) // plant.capacity + 1)*op*5/plant.rate))
+                #"""
+                """ mode 2 #calculate time
                 op_time = ((chip.number - 1) // plant.capacity + 1)
                 if last_plant != None:
                     op_time = (int)(math.ceil(((chip.number - 1) // plant.capacity + 1)+((last_plant.loc1-plant.loc1)**2+(last_plant.loc2-plant.loc2)**2)**0.5))  # calculate the operation time in the plant, need to ensure number > 0 (otherwise why you buy it?)
                 else:
                     op_time = ((chip.number - 1) // plant.capacity + 1)
                 """
-             #   """ mode 3
+                """ mode 3
                 op_time = (int)(math.ceil(((chip.number - 1) // plant.capacity + 1)*op*5*plant.rate/10))
-            #    """
+                """
                 """ mode 4 
                 op_time = ((chip.number - 1) // plant.capacity + 1)
                 """
@@ -119,25 +123,31 @@ def allocate_package_time (package):
                     
                 if left_time > 0: # if there is still left_time after finding all intervals
                     choose_time = left_time + last_time - 1
-                last_time = choose_time
+                last_time = choose_time + op_time
                 insert_time(plant.process_list, choose_time, choose_time + op_time)
                 # the simulation inserts the time interval temporarily, it should be removed later.
                 stack.append((plant.process_list, choose_time, choose_time + op_time)) 
-                latest_time = max(latest_time, choose_time + op_time) 
+            last_time += ((last_plant.loc1-me.loc1)**2+(last_plant.loc2-me.loc2)**2)**0.5  #add the consumer time
+            cost += ((last_plant.loc1-me.loc1)**2+(last_plant.loc2-me.loc2)**2)**0.5
+            latest_time.append(last_time)
               #  if i == 20: print(plant.ID, plant.process_list, latest_time)
-        
+        latest_time = max(latest_time)
         # delete the temporary interval before the next simulation
         for list, x, y in stack:
             delete_time(list, x, y)
         time_distribution.append(latest_time)
-        
-    time_distribution.sort()
+        cost_distribution.append(cost)
+    #time_distribution.sort()
     
-    return time_distribution  # this line is to find the time distribution of simulation
-    
-    user_latest_time = 0 # the latest time all operations are done in the user given timelist
+    return time_distribution,cost_distribution  # this line is to find the time distribution of simulation
+
+def calculate_user_info(kde_t,kde_m,status):
+    user_latest_time = [] # the latest time all operations are done in the user given timelist
     # calculate the user_latest_time
+    cost = 0
     for chip in package: 
+        last_op_finish_time = 0
+        last_plant = None
         for i in range(len(chip.plant)):
             plant_info = chip.plant[i]
             time_info = chip.timelist[i]
@@ -146,68 +156,25 @@ def allocate_package_time (package):
                 if plant.ID == plant_info:
                     capacity = plant.capacity
                     break
-            op_time = (chip.number - 1) // capacity + 1;
-            insert_time(plant.process_list, time_info, time_info + op_time) # the user's add has the effect on the process_list
-            user_latest_time = max(user_latest_time, time_info + op_time)
+            if last_plant == None:
+                op_time = (int)(math.ceil(((chip.number - 1) // plant.capacity + 1)*(i+1)*5*plant.rate/10))
+                cost += (int)(math.ceil(((chip.number - 1) // plant.capacity + 1)*(i+1)*5*plant.rate/10))
+            else:
+                op_time = (int)(math.ceil(((chip.number - 1) // plant.capacity + 1)*(i+1)*5*plant.rate/10+((last_plant.loc1-plant.loc1)**2+(last_plant.loc2-plant.loc2)**2)**0.5))
+                cost += (int)(math.ceil(((chip.number - 1) // plant.capacity + 1)*(i+1)/plant.rate + ((last_plant.loc1-plant.loc1)**2+(last_plant.loc2-plant.loc2)**2)**0.5))
+            last_plant = plant
+            if status == 'commit':
+                insert_time(plant.process_list, time_info, time_info + op_time) # the user's add has the effect on the process_list
+            last_op_finish_time = time_info + op_time
+        last_op_finish_time += ((last_plant.loc1-me.loc1)**2+(last_plant.loc2-me.loc2)**2)**0.5 
+        cost += ((last_plant.loc1-me.loc1)**2+(last_plant.loc2-me.loc2)**2)**0.5
+        user_latest_time.append(last_op_finish_time)
+    user_latest_time = max(user_latest_time)
+    score_t = 1-kde_t.integrate_box_1d(0,user_latest_time)
+    score_m = 1-kde_m.integrate_box_1d(0,cost)
+    return 0.5*(score_m+score_t)*100,user_latest_time,cost
 #    print(user_latest_time)
     # find the rank of the user_latest_time in the time_distribution, and get the score
-    for i in range(len(time_distribution)):
-        if user_latest_time <= time_distribution[i]:
-            return 1 - i / len(time_distribution)
-    return 0     
-
-
-# expense
-def allocate_package_expense(package, consumer):
-    global op_to_plant
-    for plant in plant_full_list:
-        for type in plant.type:
-            op_to_plant[type].append(plant)
-
-    expense_distribution = [] # expense_distribution records for the expense every simulation is done.
-    for i in range(SIMULATION_TIMES):
-        package = np.random.permutation(package) # randomize the order of chip selection.
-        total_money = 0 # record the total expense of a package for one simulation
-        for chip in package:
-            # find the oplist for this chip
-            oplist = []
-            last_plant = None
-            for chip_info in chip_full_list:
-                if chip_info.type == chip.type:
-                    oplist = chip_info.oplist
-
-            chip_money = 0
-            for op in oplist:
-                # retrieve the valid plant for each operation
-                plant_list = op_to_plant[op]
-                plant = rd.choice(plant_list) # randomly choose a valid plant
-
-                # find the correspending money of this op
-                for j in range(len(plant.type)):
-                    if plant.type[j] == op:
-                        m = j
-                        break
-                unit_money = plant.expense[m]
-                # plant operation money: chip num*expense
-                op_money = math.ceil(chip.number - 1) * unit_money
-                # transpory money
-                if last_plant == None:
-                    trans_money = 0
-                else:
-                    # trans_money = 3 * distance
-                    trans_money = (((last_plant.loc1 - plant.loc1)**2+(last_plant.loc2 - plant.loc2))**0.5) * 3
-                chip_money = chip_money + op_money + trans_money
-                last_plant = plant # update last plant
-            # last plant to consumer
-            trans_money = (((last_plant.loc1 - consumer.loc1)**2+(last_plant.loc2 - consumer.loc2))**0.5) * 3
-            chip_money += trans_money
-
-            # add this type chip to total money of this simulation
-            total_money += chip_money
-        expense_distribution.append(total_money)
-    
-    expense_distribution.sort
-    return expense_distribution
 
     
 
@@ -224,22 +191,36 @@ me = consumer(package_full_list, np.random.randint(1,1000), np.random.randint(1,
 # package_full_list = [ [ chip_in_package(1, 110, [2, 2, 3], [1,2,3]), chip_in_package(2, 350, [6, 0, 5], [1, 4, 3]) ], [ chip_in_package(1, 200, [20,20,20], [1,2,3]) ] ]
 
 # read from the data
-fig = sns.boxplot()
-for data in range(1,4):
-    d1 = pd.read_csv("./info_plant"+str(data)+".csv")
-    for i in range(200):
-        plant_full_list.append(plant(i, eval(str(d1["type"][i])), eval(str(d1["expense"][i])), d1["capacity"][i], eval(str(d1["status"][i])), d1["loc1"][i], d1["loc2"][i], d1["rate"][i]))
-    d2 = pd.read_csv("./info_chip.csv")
-    for i in range(12):
-        chip_full_list.append(chip(d2["type"][i], eval(d2["oplist"][i])))
-   # print
-    for package in me.package:
-        # dis = allocate_package_time(package)
-        dis = allocate_package_expense(package, me)
-    print(dis)   
-    dis = np.array(dis)
-    x,y=np.unique(dis,return_counts=True)
-    fig=sns.kdeplot(dis,legend=str(data))
-    plt.legend(str(data))
-   # sns.displot(dis,bins=len(y),kde=True)
+# fig = sns.boxplot()
+fig, ax = plt.subplots(1, 2, sharex=True, sharey=True)
+data = 1
+d1 = pd.read_csv("D:/Desktop/program/CSC3170/program/info_plant"+str(data)+".csv")
+for i in range(200):
+    plant_full_list.append(plant(i, eval(str(d1["type"][i])), d1["capacity"][i], eval(str(d1["status"][i])), d1["loc1"][i], d1["loc2"][i], d1["rate"][i]))
+d2 = pd.read_csv("D:/Desktop/program/CSC3170/program/info_chip.csv")
+for i in range(12):
+    chip_full_list.append(chip(d2["type"][i], eval(d2["oplist"][i])))
+# print
+for package in me.package:
+    dis_t,dis_m = allocate_package_time(package)
+    # dis = allocate_package_expense(package, me)
+# print(dis_t)
+# print(dis_m)   
+dis_t = np.array(dis_t)
+dis_m = np.array(dis_m)
+X_plot = np.linspace(-3,5000,3000) #need tp adjust by time!!
+# print(X_plot)
+kde_t = gaussian_kde(dis_t)
+kde_m = gaussian_kde(dis_m)
+score,time,cost = calculate_user_info(kde_t,kde_m,'analysis')
+ax[0].plot(X_plot, kde_t.evaluate(X_plot))
+ax[0].axvline(time,linestyle = '--',color = 'red')
+ax[1].plot(X_plot, kde_m.evaluate(X_plot))
+ax[1].axvline(cost,linestyle = '--',color = 'red')
+#x,y=np.unique(dis_m,return_counts=True)
+#fig=sns.kdeplot(dis_m,legend=str(data))
+# sns.displot(dis,bins=len(y),kde=True)
+ax[0].set_title('Estimated Distribution of Processing time')
+ax[1].set_title('Estimated Distribution of Expense')
+print(score)
 plt.show()

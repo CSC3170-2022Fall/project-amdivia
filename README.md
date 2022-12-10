@@ -24,7 +24,7 @@ Our team consists of the following members, listed in the table below (the team 
 | 120090737  | 刘宇轩         | 120090737@link.cuhk.edu.cn            |LIUAnakin|
 | 120040088  | 王熹           | 120040088@link.cuhk.edu.cn            |iamgeorge|
 | 120090721  | 熊一鸣         | 120090721@link.cuhk.edu.cn            |zksha|
-| 120010035  | 黄熹正         | 120010035@link.cuhk.edu.cn            |undo|
+| 120010035  | 黄熹正         | 120010035@link.cuhk.edu.cn            |TheBigDoge|
 | 120010061  | 林泽昕         | 120010061@link.cuhk.edu.cn            |webDrag0n|
 | 120090638  | 孙绍强         | 120090638@link.cuhk.edu.cn            |ShaoqiangSun|
 | 120090673  | 曲恒毅         | qulend@163.com            |HomuraCat|

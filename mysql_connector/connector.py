@@ -22,6 +22,7 @@ def insert_chip(mycursor):
 def read_chip(mycursor):
     mycursor.execute("SELECT * FROM AMDVIA.chip")
     myresult = mycursor.fetchall()
+    # print(myresult)
     for x in myresult:
         print(x)
         
@@ -36,5 +37,5 @@ print(mydb)
 mycursor = mydb.cursor()
 # create_tables(mycursor)
 # insert_chip(mycursor)
-read_chip(mycursor)
+# read_chip(mycursor)
 

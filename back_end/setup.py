@@ -17,5 +17,15 @@ def login():
     password = data['password']
     return name + password
 
+@app.route("/bank/check", methods=['POST'])
+def check():
+    data = request.get_json()
+    if data is None or 'name' not in data or 'id' not in data:
+        return 'error'
+    name = data['name']
+    id = data['id']
+    
+    return name + id
+
 if __name__ == "__main__":
   app.run()

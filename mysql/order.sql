@@ -1,12 +1,13 @@
 CREATE TABLE AMDVIA.`order` (
-	order_ID INT auto_increment NOT NULL,
+	order_ID INT NOT NULL,
 	consumer_ID INT NOT NULL,
-	status bool NOT NULL,
-	package_list varchar(100) NOT NULL,
-	actual_money double NOT NULL,
-	order_time int NOT NULL,
-	budget float NOT NULL,
-	expected_time int NOT NULL,
+	status INT NOT NULL,
+	package_list varchar(255) NOT NULL,
+	actual_money INT NOT NULL,
+	budget INT NOT NULL,
+	order_time INT NOT NULL,
+	expected_time INT NOT NULL,
+	finish_time INT NOT NULL,
 	CONSTRAINT order_PK PRIMARY KEY (order_ID)
 )
 ENGINE=InnoDB

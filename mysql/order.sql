@@ -2,7 +2,7 @@ CREATE TABLE AMDVIA.`order` (
 	order_ID INT NOT NULL,
 	consumer_ID INT NOT NULL,
 	status INT NOT NULL,
-	package_list varchar(255) NOT NULL,
+	package_list JSON NOT NULL,
 	actual_money INT NOT NULL,
 	budget INT NOT NULL,
 	order_time INT NOT NULL,

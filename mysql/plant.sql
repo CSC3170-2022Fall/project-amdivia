@@ -3,7 +3,7 @@ CREATE TABLE AMDVIA.plant (
 	CONSTRAINT plant_PK PRIMARY KEY (plant_ID),
 	plant_name varchar(255) NOT NULL,
 	capacity INT NOT NULL,
-	process_list varchar(255) NOT NULL,
+	process_list JSON NOT NULL,
 	processing_rate INT NOT NULL,
 	loc1 INT NOT NULL,
 	loc2 INT NOT NULL

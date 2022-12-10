@@ -3,8 +3,8 @@ CREATE TABLE AMDVIA.pakage (
 	CONSTRAINT package_PK PRIMARY KEY (package_ID),
 	chip_name varchar(100) NOT NULL,
 	chip_number INT NOT NULL,
-	starttime_list varchar(255) NOT NULL,
-	plant_list varchar(255) NOT NULL
+	starttime_list JSON NOT NULL,
+	plant_list JSON NOT NULL
 )
 ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4

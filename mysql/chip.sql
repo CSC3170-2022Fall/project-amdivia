@@ -1,6 +1,6 @@
 CREATE TABLE AMDVIA.chip (
 	chip_name varchar(100) NOT NULL,
-	operation_sequence varchar(100) NOT NULL,
+	operation_sequence JSON NOT NULL,
 	CONSTRAINT chip_PK PRIMARY KEY (chip_name)
 )
 ENGINE=InnoDB

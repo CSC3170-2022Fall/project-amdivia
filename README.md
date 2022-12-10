@@ -75,7 +75,13 @@ We assume the customer will provide an order with different sets of chips and di
 We decide to use MySQL for this project. The next priority is to write a connector that connects MySQL and the back-end system (python based). Fortunately, MySQL-python connector can perform the job really well. So, we first wrote a simple script to create all tables provided by the ER-diagram above:
 <img src="res/er_diagram_code.png" alt="er_diagram_code.png" style="zoom:80%;" />
 
-### 3. Target Analysis
+### 3. Banking System
+
+We also designed a banking system for this project. This banking system has an independent database to store the information of each user, since we wanted to highlight its independence.
+
+The system supports the reading of a user's bank card ID and the amount to be deducted. After receiving the deduction request, the user's balance and deduction amount will be compared in the database. If the user balance is insufficient or the ID of the corresponding user cannot be queried, the message of deduction failure will be returned. The data in the database will not change. Otherwise, the message of successful deduction will be returned and the user's balance in the database will be updated.
+
+### 4. Target Analysis
 
 A data analysis team is set up to analyze the user's input production policy and return the score (KPI) for that policy. This team will further study the influence of each variable on the output KPI.
 

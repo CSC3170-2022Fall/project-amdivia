@@ -2,6 +2,7 @@ from flask import Flask, request
 import json
 from analysis import *
 from connector import *
+from bank import *
 
 app = Flask(__name__)
 
@@ -31,6 +32,19 @@ def KPI_calculator ():
     loc1, loc2 = get_consumer_loc(mycursor, consumer_id)
     return str(calc_kpi(package_full_list, loc1, loc2))
 
+@app.route("/bank/check", methods = ['GET'])
+def check_id():
+    data = request.get_json()
+    if data is None or 'id' not in data:
+        return "404 not found: Can't find data!"
+    return check_account(mycursor, data["id"])
+
+@app.route("/bank/pay", methods = ['POST'])
+def check_pay():
+    data = request.get_json()
+    if data is None or 'id' not in data or 'money' not in data:
+        return "404 not found: Can't find data!"
+    pay(mycursor, data["id"])
 
 
 if __name__ == "__main__":

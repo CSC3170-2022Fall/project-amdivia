@@ -43,30 +43,3 @@ def pay(cursor, con_id, cost):
     where consumer_ID = """ + str(con_id)
     cursor.execute(sql)
 
-@app.route("/bank/check", methods = ['POST'])
-def check_id():
-    data = request.get_json()
-    if data is None or 'id' not in data:
-        return "404 not found: Can't find data!"
-    return check_account(cursor, data["id"])
-
-@app.route("/bank/pay", methods = ['POST'])
-def check_pay():
-    data = request.get_json()
-    if data is None or 'id' not in data or 'money' not in data:
-        return "404 not found: Can't find data!"
-    pay(data["id"])
-
-if __name__ == "__main__":
-    icbc = pymysql.connect(host = '127.0.0.1',
-                           port = 3306,
-                           user = 'wek_deng',
-                           password = '123456',
-                           database = 'ICBC')
-    cursor = icbc.cursor()
-    create_table(cursor)
-    app.run()
-    icbc.commit()
-    cursor.close()
-    icbc.close()
-

@@ -46,7 +46,22 @@ def check_pay():
         return "404 not found: Can't find data!"
     pay(mycursor, data["id"])
 
+@app.route("/chip/process", methods = ['get'])
+def chip_process_list():
+    data = request.args
+    if data is None or 'chip_type' not in data:
+        return "404 not found: Can't find chip_type!"
+    chip_type = data.get("chip_type")
+    return get_chip_process_list(mycursor, chip_type)
+
+@app.route("/plant/process", methods = ['get'])
+def plant_process_list():
+    data = request.args
+    if data is None or 'plant_id' not in data:
+        return "404 not found: Can't find plant_id!"
+    plant_id = data.get("plant_id")
+    return get_plant_process_list(mycursor, plant_id)
 
 if __name__ == "__main__":
-  app.run(host = '0.0.0.0', port = 5000, debug = True)
+  app.run(host = '0.0.0.0', port = 5001, debug = True)
 

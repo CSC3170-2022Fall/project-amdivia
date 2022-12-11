@@ -11,7 +11,7 @@ def create_tables(mycursor):
     mycursor.execute("CREATE TABLE AMDVIA.plant (plant_ID INT NOT NULL, CONSTRAINT plant_PK PRIMARY KEY (plant_ID), plant_name varchar(255) NOT NULL, capacity INT NOT NULL, process_list JSON NOT NULL, processing_rate INT NOT NULL, loc1 INT NOT NULL, loc2 INT NOT NULL)")
 
 def insert_chip(mycursor):
-    df = pd.read_csv('/home/webdrag0n/csc3170/project-amdvia/fake_data/chip.csv')
+    df = pd.read_csv('fake_data/chip.csv')
     for i in range(df.shape[0]):
         tmp_list = eval(df["operation_sequence"][i])
         keys = [str(x) for x in range(len(tmp_list))]
@@ -23,14 +23,14 @@ def insert_chip(mycursor):
     print(df)
 
 def insert_consumer(mycursor):
-    df = pd.read_csv('/home/webdrag0n/csc3170/project-amdvia/fake_data/consumer.csv')
+    df = pd.read_csv('fake_data/consumer.csv')
     for i in range(df.shape[0]):
         sql = "INSERT INTO AMDVIA.consumer(consumer_ID, consumer_password, first_name, second_name, bank_ID, loc1, loc2) VALUES (%s, %s, '%s', '%s', %s, %s, %s)" % (df['consumer_id'][i], df['consumer_password'][i], df['first_name'][i], df['second_name'][i], df['bank_id'][i], df['loc1'][i], df['loc2'][i])
         mycursor.execute(sql)
         mydb.commit()
 
 def insert_operation(mycursor):
-    df = pd.read_csv('/home/webdrag0n/csc3170/project-amdvia/fake_data/operation.csv')
+    df = pd.read_csv('fake_data/operation.csv')
     for i in range(df.shape[0]):
         tmp_list = eval(df["plant_list"][i])
         keys = [str(x) for x in range(len(tmp_list))]
@@ -41,7 +41,7 @@ def insert_operation(mycursor):
         mydb.commit()
 
 def insert_plant(mycursor):
-    df = pd.read_csv('/home/webdrag0n/csc3170/project-amdvia/fake_data/plant.csv')
+    df = pd.read_csv('fake_data/plant.csv')
     for i in range(df.shape[0]):
         tmp_list = eval(df["process_list"][i])
         keys = [str(x) for x in range(len(tmp_list))]
@@ -115,10 +115,49 @@ def update_time (plant_id, x, y): # update the process list of the plant, add ti
     mycursor.execute("UPDATE AMDVIA.plant SET process_list = '%s' WHERE plant_id = %d" % (str(str_json), plant_id))
     mydb.commit()
 
+def get_plant_name(mycursor, plant_id):
+    mycursor.execute("SELECT plant_name FROM AMDVIA.plant where plant_id = %d" % plant_id)
+    myresult = mycursor.fetchall()
+    return myresult[0][0]
+
+def get_chip_process_list(mycursor, chip_name):
+    result = {}
+    sql = "SELECT operation_sequence FROM AMDVIA.chip where chip_name = '%s'" % chip_name
+    mycursor.execute(sql)
+    myresult = mycursor.fetchall()
+    json_str = json.loads(myresult[0][0])
+    process_list = list(json_str.values())
+    operation_number = len(process_list)
+    
+    count = 1
+    for operation_id in process_list:
+        sql = "SELECT plant_list FROM AMDVIA.operation where operation_id = %d" % operation_id
+        mycursor.execute(sql)
+        myresult = mycursor.fetchall()
+        json_str = json.loads(myresult[0][0])
+        plant_ID_list = list(json_str.values())
+        plant_list = []
+        for plant_id in plant_ID_list:
+            plant_name = get_plant_name(mycursor, plant_id)
+            plant_list.append(plant_name)
+        result['operation' + str(count)] = plant_list
+        count = count + 1
+    result['operation_number'] = operation_number
+    return result
+
+
+def get_plant_process_list(mycursor, plant_id):
+    sql = "SELECT process_list FROM AMDVIA.plant where plant_id = %d" % int(plant_id)
+    mycursor.execute(sql)
+    myresult = mycursor.fetchall()
+    json_str = json.loads(myresult[0][0])
+    process_list = list(json_str.values())
+    return process_list
+
 mydb = mysql.connector.connect(
   host="localhost",
   user="root",
-  password="csc3170",
+  password="wangxiiq200",
   database = "AMDVIA",
   auth_plugin='mysql_native_password'
 )
@@ -134,4 +173,5 @@ mycursor = mydb.cursor()
 # insert_consumer(mycursor)
 # insert_operation(mycursor)
 # insert_plant(mycursor)
+# get_chip_process_list(mycursor, 'CK101')
 

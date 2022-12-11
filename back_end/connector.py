@@ -17,7 +17,6 @@ def insert_chip(mycursor):
         keys = [str(x) for x in range(len(tmp_list))]
         list_json = dict(zip(keys, tmp_list))
         str_json = json.dumps(list_json)
-        print(str_json)
         sql = "INSERT INTO AMDVIA.chip(chip_name, operation_sequence) VALUES ('%s', '%s')" % (df['chip_name'][i], str(str_json))
         mycursor.execute(sql)
         mydb.commit()
@@ -98,6 +97,23 @@ def get_consumer_loc(mycursor, consumerid):
     loc1 = myresult[0][0]
     loc2 = myresult[0][1]
     return loc1, loc2
+
+# 向plant_id的plant的processlist里添加[x, y]
+def update_time (plant_id, x, y): # update the process list of the plant, add time interval [x, y] into the data base
+    mycursor.execute("SELECT process_list FROM AMDVIA.plant where plant_id = %d" % plant_id)
+    myresult = mycursor.fetchall()
+    json_str = json.loads(myresult[0][0])
+    process_list = list(json_str.values())
+    time_inv = list()
+    time_inv.append(x)
+    time_inv.append(y)
+    process_list.append(time_inv)
+
+    keys = [str(x) for x in range(len(process_list))]
+    list_json = dict(zip(keys, process_list))
+    str_json = json.dumps(list_json)
+    mycursor.execute("UPDATE AMDVIA.plant SET process_list = '%s' WHERE plant_id = %d" % (str(str_json), plant_id))
+    mydb.commit()
 
 mydb = mysql.connector.connect(
   host="localhost",

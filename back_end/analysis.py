@@ -55,8 +55,7 @@ def delete_time (list, x, y):     # similar as insert_time but delete an existed
             list.pop(i)
             break
 
-def update_time (plant_id, x, y): # update the process list of the plant, add time interval [x, y] into the data base
-    return
+
 # time
 def allocate_package_time (package, loc1, loc2):
     cost_distribution = [] # cost_distribution

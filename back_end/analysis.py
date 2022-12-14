@@ -9,7 +9,6 @@ from connector import *
 
 SIMULATION_RANGE = 10
 SIMULATION_TIMES = 500
-OPERATION_TYPE = 5
 
 
 class chip:
@@ -140,6 +139,17 @@ def calculate_user_info(kde_t,kde_m,status,package,loc1,loc2):
     score_m = 1-kde_m.integrate_box_1d(0,cost)
     return 0.5*(score_m+score_t)*100,user_latest_time,cost
 
+def calc_phi(kde, percent):
+    l = 0
+    r = 1000000000
+    while r - l > 0.1:
+        mid = (l + r) / 2
+        if kde.integrate_box_1d(0, mid) > percent:
+            r = mid
+        else:
+            l = mid
+    return l
+
 def calc_kpi_time_cost (package_full_list, loc1, loc2):
     temp_package = []
     for i in range(len(package_full_list)):
@@ -153,6 +163,25 @@ def calc_kpi_time_cost (package_full_list, loc1, loc2):
     kde_t = gaussian_kde(dis_t)
     kde_m = gaussian_kde(dis_m)
     score, time, cost = calculate_user_info(kde_t,kde_m,'analysis',me.package,loc1,loc2)
+
+    fig, ax = plt.subplots(1, 1, sharex=True, sharey=True)
+    x, y = calc_phi(kde_t, 0.000001), calc_phi(kde_t, 0.999999)
+    plt.xlim((x, y))
+    X_plot = np.linspace(x, y ,3000) #need tp adjust by time!!
+    ax.plot(X_plot, kde_t.evaluate(X_plot))
+    ax.axvline(time,linestyle = '--',color = 'red')
+    ax.set_title('Estimated Distribution of Processing time')
+    plt.savefig("./time.jpg")
+
+    fig, ax = plt.subplots(1, 1, sharex=True, sharey=True)
+    x, y = calc_phi(kde_m, 0.000001), calc_phi(kde_m, 0.999999)
+    plt.xlim((x, y))
+    X_plot = np.linspace(x, y ,3000) #need tp adjust by time!!
+    ax.plot(X_plot, kde_m.evaluate(X_plot))
+    ax.axvline(cost,linestyle = '--',color = 'red')
+    ax.set_title('Estimated Distribution of Expense')
+    plt.savefig("./money.jpg")
+   # plt.show()
     return score, time, cost
 
 def cross (x, y, interval):

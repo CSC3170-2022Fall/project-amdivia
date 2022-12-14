@@ -77,23 +77,23 @@
    ```json
    // 前端发送的json
    {
-       "status":"analysis",
-       "order_id":12345678,
-       "consumer_id":89638599,
-       "package_id_list":[12,84],
-       "budge":60005,
-       "expected_time":97,
-   
-       "0_chip_name":"CK101",
-       "0_chip_number":50,
-       "0_plant_name_list":["dasd","我是工厂名不是id","ad"],
-       "0_starttime_list":[0, 3, 9],
-   
-       "1_chip_name":"NB666",	
-       "1_chip_number":30,
-       "1_plant_name_list":["fqeq","我是工厂名不是id2"],
-       "1_starttime_list":[0, 12, 123],
-   }
+    "status":"analysis",
+    "order_id":12345678,
+    "consumer_id":89638599,
+    "package_id_list":[12,84],
+    "budget":60005,
+    "expected_time":97,
+
+    "0_chip_name":"CK101",
+    "0_chip_number":50,
+    "0_plant_name_list":["Reed, Spence and Harris","Diaz, Andersen and Cooper","Fernandez, Boyd and Palmer"],
+    "0_starttime_list":[0, 25, 55],
+
+    "1_chip_name":"CK101",
+    "1_chip_number":30,
+    "1_plant_name_list":["Reed, Spence and Harris","Diaz, Andersen and Cooper","Fernandez, Boyd and Palmer"],
+    "1_starttime_list":[20, 47, 80]
+    }
    ```
 
 6. 用户第二次确认下单后，后端询问bank该consumer的余额是否充足，若充足就扣钱并更新bank和淘宝数据库，若不充足就返回余额不足。

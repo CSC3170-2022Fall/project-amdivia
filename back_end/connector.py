@@ -120,6 +120,11 @@ def get_plant_name(mycursor, plant_id):
     myresult = mycursor.fetchall()
     return myresult[0][0]
 
+def get_plant_id (mycursor, plant_name):
+    mycursor.execute("SELECT plant_id FROM AMDVIA.plant where plant_name = '%s'" % plant_name)
+    myresult = mycursor.fetchall()
+    return myresult[0][0]
+
 def get_chip_process_list(mycursor, chip_name):
     result = {}
     sql = "SELECT operation_sequence FROM AMDVIA.chip where chip_name = '%s'" % chip_name
@@ -128,7 +133,7 @@ def get_chip_process_list(mycursor, chip_name):
     json_str = json.loads(myresult[0][0])
     process_list = list(json_str.values())
     operation_number = len(process_list)
-    
+
     count = 1
     for operation_id in process_list:
         sql = "SELECT plant_list FROM AMDVIA.operation where operation_id = %d" % operation_id
@@ -154,10 +159,12 @@ def get_plant_process_list(mycursor, plant_id):
     process_list = list(json_str.values())
     return process_list
 
+
+
 mydb = mysql.connector.connect(
   host="localhost",
   user="root",
-  password="wangxiiq200",
+  password="csc3170",
   database = "AMDVIA",
   auth_plugin='mysql_native_password'
 )
@@ -173,5 +180,5 @@ mycursor = mydb.cursor()
 # insert_consumer(mycursor)
 # insert_operation(mycursor)
 # insert_plant(mycursor)
-# get_chip_process_list(mycursor, 'CK101')
+
 

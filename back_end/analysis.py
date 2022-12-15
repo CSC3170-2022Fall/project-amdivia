@@ -9,6 +9,7 @@ from connector import *
 
 SIMULATION_RANGE = 10
 SIMULATION_TIMES = 500
+OPERATION_TYPE = 5
 
 
 class chip:
@@ -137,6 +138,7 @@ def calculate_user_info(kde_t,kde_m,status,package,loc1,loc2):
     user_latest_time = max(user_latest_time)
     score_t = 1-kde_t.integrate_box_1d(0,user_latest_time)
     score_m = 1-kde_m.integrate_box_1d(0,cost)
+    cost = math.ceil(cost * 100) / 100
     return 0.5*(score_m+score_t)*100,user_latest_time,cost
 
 def calc_phi(kde, percent):
@@ -191,6 +193,7 @@ def validate(package):
     last_plant = None
     chip_th = 0
     plt = {}
+    finishtime_list = []
     for chip in package:
         for p in chip.plant:
             plt[p] = to_plant(*get_plant_info(mycursor, p))
@@ -199,6 +202,7 @@ def validate(package):
         chip_th += 1
         last_time = get_current_time()
      #   print(chip.plant)
+        finishtime_list.append([])
         for i in range(len(chip.oplist)):
             op = chip.oplist[i]
             plant = plt[chip.plant[i]]
@@ -222,5 +226,6 @@ def validate(package):
                     return {"flag" : False, "start_time" : i + 1, "plant" : i, "package" : chip_th}
             # find the left_time-th valid time to be the start time of the operation
             last_time = choose_time + op_time
+            finishtime_list[chip_th - 1].append(last_time)
             insert_time(plt, chip.plant[i], choose_time, choose_time + op_time)
-    return {"flag" : True}
+    return {"flag" : True, "finishtime_list" : finishtime_list}

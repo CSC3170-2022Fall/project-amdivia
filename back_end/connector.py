@@ -1,6 +1,7 @@
 import mysql.connector
 import pandas as pd
 import json
+import math
 
 def create_tables(mycursor):
     mycursor.execute("CREATE TABLE AMDVIA.chip (chip_name varchar(100) NOT NULL, operation_sequence JSON NOT NULL, CONSTRAINT chip_PK PRIMARY KEY (chip_name))")
@@ -98,20 +99,37 @@ def get_consumer_loc(mycursor, consumerid):
     loc2 = myresult[0][1]
     return loc1, loc2
 
+def check_consumer_password(mycursor, consumerid, pw):
+    mycursor.execute("SELECT consumer_password FROM AMDVIA.consumer where consumer_id = %d" % consumerid)
+    myresult = mycursor.fetchall()
+    if len(myresult) == 0: return 2
+    if myresult[0][0] == pw:
+        return 1
+    else:
+        return 0
+
+def insert_time (list, x, y):       # add (x, y) interval into the list, and keep it in order
+    for i in range(len(list)):
+        if list[i][1] > x:
+            list.insert(i, (x, y))
+            return
+    list.append((x, y))
+
 # 向plant_id的plant的processlist里添加[x, y]
 def update_time (plant_id, x, y): # update the process list of the plant, add time interval [x, y] into the data base
+    #print(plant_id, x, y)
+    #return
+
     mycursor.execute("SELECT process_list FROM AMDVIA.plant where plant_id = %d" % plant_id)
     myresult = mycursor.fetchall()
     json_str = json.loads(myresult[0][0])
+    print(json_str)
     process_list = list(json_str.values())
-    time_inv = list()
-    time_inv.append(x)
-    time_inv.append(y)
-    process_list.append(time_inv)
-
+    insert_time(process_list, x, y)
     keys = [str(x) for x in range(len(process_list))]
     list_json = dict(zip(keys, process_list))
     str_json = json.dumps(list_json)
+    #print(str_json)
     mycursor.execute("UPDATE AMDVIA.plant SET process_list = '%s' WHERE plant_id = %d" % (str(str_json), plant_id))
     mydb.commit()
 
@@ -159,7 +177,16 @@ def get_plant_process_list(mycursor, plant_id):
     process_list = list(json_str.values())
     return process_list
 
-
+def get_order_info(mycursor, consumer_id):
+    sql = "SELECT order_ID, consumer_ID, status, package_list, actual_money, budget, order_time, expected_time, finish_time FROM AMDVIA.order where consumer_ID = %s" % int(consumer_id)
+    print(sql)
+    mycursor.execute(sql)
+    myresult = mycursor.fetchall()
+#    return myresult[0][0]
+    if len(myresult) == 0:
+        return "Invalid consumer id"
+    else:
+        return myresult
 
 mydb = mysql.connector.connect(
   host="localhost",

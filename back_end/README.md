@@ -161,7 +161,7 @@ input
   output
   ``` json
 {
-    "finishtime_list": [[20, 44, 65],[43, 67, 89]],
+    "finishtime_list": [[20,47,64],[40,69,89]],
     "kpi": 84.73384896174014,
     "money_cost": 5622.29,
     "time_cost": 99,

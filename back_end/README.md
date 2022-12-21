@@ -62,7 +62,7 @@ tuple: (order_id, consumer_id, status, package_list, actual_money, budget, order
 ## **后续可以改成以dict的形式返回，需要告诉我需要哪几项？**
 
 
-# 3. 用户切换到工厂信息页面，后端返回当前所有工厂的信息状态。
+# 3. 用户切换到工厂信息页面，后端返回当前所有工厂的信息状态。（todo：需要把单一工厂改成所有工厂）
 
 接口: [get]http://10.31.133.149:5000/plant/process?plant_id=7
 
@@ -127,7 +127,7 @@ output:
    }
    ```
 
-# 5. 用户第一次确认下单后，后端check用户的策略是否合理，不合理返回不合理的原因，合理就analysis并返回KPI。
+# 5. 用户第一次确认下单后，后端check用户的策略是否合理，不合理返回不合理的原因，合理就analysis并返回KPI。合理后会在bank end文件夹生成两个图(money.jpg和time.jpg)表示随机状况下的distribution
 
 # **默认用户选择的工厂是能进行对应 operation 的，此部分只检测 start_time 的合理性**
 
@@ -267,5 +267,8 @@ output
 ```
 897046
 ```
+
+# 9 返回用户基本信息（todo）
+User ID, User Name, Bank ID, Bank balance
 
 

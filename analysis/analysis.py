@@ -206,7 +206,7 @@ for package in me.package:
 # print(dis_m)
 dis_t = np.array(dis_t)
 dis_m = np.array(dis_m)
-X_plot = np.linspace(-3,5000,3000) #need tp adjust by time!!
+X_plot = np.linspace(-3,1000,3000) #need tp adjust by time!!
 # print(X_plot)
 kde_t = gaussian_kde(dis_t)
 kde_m = gaussian_kde(dis_m)

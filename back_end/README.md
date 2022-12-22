@@ -1,3 +1,14 @@
+# bank module
+
+### file: bank.py initialze_bank/initial_bank.py
+
+bank.py: Include the necessary functions for the bank module. "create_table" for creating bank table in database, "insert_account" for
+creating a new account in database, "check_account" for querying such account_id's balance and "pay" for debitting the corresponding account_id
+
+initial_bank.py: Initialize the bank database. Provide fake data in the bank account corresponding to the customer.
+
+![image](https://github.com/CSC3170-2022Fall/project-amdvia/blob/740d8731b1090dbdaf137a537adce1d91d61b42d/res/bank_diagram.png)
+
 # 大致流程：
 用户提交方案 -> 方案通过并计算出kpi(/kpi) -> 用户确认后，尝试扣款其银行账户(/pay/) -> 扣款成功后，把订单信息写入数据库(/confirm)
 

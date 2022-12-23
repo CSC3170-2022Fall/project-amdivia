@@ -4,10 +4,12 @@
 Here shows our ER diagram of the main database. We could start from the consumer table. As you can see, consumer table include a unique ID, and other necessary information including location, bank ID and so on. It has a one to many relationship with the order table. Since each order must has a consumer, one consumer can have several orders and some consumer might not have any orders. Here one order contains many types of chips. So we need to depart orders into different packages, where one package only contain one type of chip. So one order can have one to many packages, and each package must belong to one order. We also use unique order and package ID as primary key. Then we can tell that each package must have one type of chip, and one chip need several operations to produce it. Last but not least, operations need to be done by plants. Since one type of machine can do several types of operation, and one operation can be done by different plants, this is a many to many relationship.
 ## Reduce to Relation Schema
 ![image](https://github.com/CSC3170-2022Fall/project-amdvia/blob/main/res/Main_Database.png)
+Then we designed the relation schema. The orange attributes are multi-valued attributes that stored as Jason. The dash lines indicate the original foreign keys. 
+Actually, we don’t use tables to represent the relationship in the ER diagram. Instead, we use these list, for example, process list, package list to store it as an attribute without normalization. Also, the reason why we use dash line to indicate the foreign keys is that we don’t use any foreign keys in implementation.
 
+Firstly, for no normalization, the reason is that in the analysis of the production plan, we need to extract these information frequently. If we depart the relationship into several tables, we need to do many natural joins when we extract the information, which is a waste of time. Instead, stored them as multi-valued attributes results easier and faster extraction in analysis.
 
-
-
+Besides, we don’t use any foreign key constraint because our database don’t allow any input that violate the constraints. More specifically, users are only allowed to select the legal information that are already settled in our system at the front end, the referenced attribute will be determined all by our system instead of customer themselves. This means violation of foreign key constraints will not happen! This ease our database and increase the processing time in the analysis. Also, since the referencing attributes such as operations of each type of machine are stored as list in Jason, it’s hard for mysql to check the foreign key constraints.
 
 # bank module
 

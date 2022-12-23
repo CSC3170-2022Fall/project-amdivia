@@ -174,11 +174,11 @@ def get_plant_process_list(mycursor):
     sql = "SELECT process_list FROM AMDVIA.plant"
     mycursor.execute(sql)
     myresult = mycursor.fetchall()
-    ret = []
+    ret = {}
     for i in range(len(myresult)):
         json_str = json.loads(myresult[i][0])
         process_list = list(json_str.values())
-        ret.append(process_list)
+        ret[i] = process_list
     return ret
 
 def get_order_info(mycursor, consumer_id):

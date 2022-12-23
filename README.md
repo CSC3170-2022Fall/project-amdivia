@@ -85,14 +85,9 @@ The system supports the reading of a user's bank card ID and the amount to be de
 
 A data analysis team is set up to analyze the user's input production policy and return the score (KPI) for that policy. This team will further study the influence of each variable on the output KPI.
 
-Until now, our data analysis team generated the distribution of KPIs based on random simulation and calculated the KPI for input production policy. The programs are written in python and are expected to be slightly modified to fit the front and back end. 
+Our analysis based on the input of customers and the information stored in our database. Basically, we settled down the order, which include different types of chips and their corresponding amount. Then we settled down the plants appointment lists, which shows when they are available in the future. Under these two conditions, we find the corresponding chip information and use the random simulation and kernel density estimation to measures how good is the production plan proposed by the customer. We test our method on three different level of occupation situation among 200 factories to show it's usability. 
 
-Our random simulation algorithm involves a  utilization of Kernel Density Estimation (KDE) to estimate the approximate distribution and transform it into a continuous distribution. The score is denoted as $1 - CDF$, which indicates the percentage rank of this user's decision plan among all other plans for the same package, as shown below:
-<figure class="half">
-    <img src="res/curve_1.png" width="290">
-    <img src="res/curve_2.png" width="290">
-</figure>
+![image](https://github.com/CSC3170-2022Fall/project-amdvia/blob/main/res/final_curve.png)
 
-The left figure is the $KDE$ for expense, and the right figure is the $KDE$ for processing time. We test our method on three different level of occupation situation among 200 factories. 
-
-We are now in the process of interfacing our algorithm with the back and front ends. And we will study the influence of each variable on the output KPI later.
+This is a real-time simulation result that we will show to the customer. 
+The left figure is the $KDE$ for expense, and the right figure is the $KDE$ for processing time. The blue curves are the estimated density function. The red line indicate the rank of the customer’s plan in expense and processing time. Then we use weights to summit the area under these two curve and get the final KPI.

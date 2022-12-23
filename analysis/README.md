@@ -12,7 +12,7 @@ We used random simulation and keep it seems to be unbiased. The algorithm is : w
 
 ![image](https://github.com/CSC3170-2022Fall/project-amdvia/blob/main/res/curve.png)
 
-Then we utilize Kernel Density Estimation to estimate the approximate distribution and transform it into a continuous distribution. The left figure is the KDE for processing time, right figure is the KDE for expense. We test our method on three different level of occupation situation among 200 factories. And the result is reasonable since blue curve is tested on the slightest occupation situation, and the mean processing time is obviously smaller, but the expense is similar to other situations.
+Then we utilize Kernel Density Estimation with Gaussian kernel to estimate the approximate distribution and transform it into a continuous distribution. The left figure is the KDE for processing time, right figure is the KDE for expense. We test our method on three different level of occupation situation among 200 factories. And the result is reasonable since blue curve is tested on the slightest occupation situation, and the mean processing time is obviously smaller, but the expense is similar to other situations.
 
 ![image](https://github.com/CSC3170-2022Fall/project-amdvia/blob/main/res/final_curve.png)
 

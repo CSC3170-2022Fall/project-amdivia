@@ -1,3 +1,14 @@
+# Database Design
+## ER diagram
+![image](https://github.com/CSC3170-2022Fall/project-amdvia/blob/740d8731b1090dbdaf137a537adce1d91d61b42d/res/er_diagram.png)
+Here shows our ER diagram of the main database. We could start from the consumer table. As you can see, consumer table include a unique ID, and other necessary information including location, bank ID and so on. It has a one to many relationship with the order table. Since each order must has a consumer, one consumer can have several orders and some consumer might not have any orders. Here one order contains many types of chips. So we need to depart orders into different packages, where one package only contain one type of chip. So one order can have one to many packages, and each package must belong to one order. We also use unique order and package ID as primary key. Then we can tell that each package must have one type of chip, and one chip need several operations to produce it. Last but not least, operations need to be done by plants. Since one type of machine can do several types of operation, and one operation can be done by different plants, this is a many to many relationship.
+## Reduce to Relation Schema
+![image](https://github.com/CSC3170-2022Fall/project-amdvia/blob/740d8731b1090dbdaf137a537adce1d91d61b42d/res/Main_Database.png)
+
+
+
+
+
 # bank module
 
 ### file: bank.py initialze_bank/initial_bank.py

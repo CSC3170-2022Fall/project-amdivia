@@ -10,12 +10,10 @@ We first extract the data we need, which is specified in the last page, then we 
 
 We used random simulation and keep it seems to be unbiased. The algorithm is : we randomly ordered the chips in the package and assigned the factory to the chips. Because the order of assigning chips may influence the processing time and the expense, then for each type of chip, we follow the manufacture sequence, i.e., operation1, operation2…, to assign a factory for each operation. For operation i, we first randomly pick a factory from all the factories that can implement operation i. We then calculate the processing time and the expense that this factory needed to do operation i (including the transition time and expense from the last factory). After that, we check the status of the picked factory and find enough spare period for it to implement operation i. We will then update the status of the factory  (with the label 'simulation' to indicate that this arrangement is not real). Then we randomly generated a small time gap to simulate the unwise choice and waste of time, which may happens in real plans. Then we repeat this procedure so on so forth. After one round of random assignment of an order, we will get a decision and its corresponding processing time and expense. By repeating this procedure a thousand times, we can approximate the distribution of the processing time and the expense corresponding to a specific package.
 
-<figure class="half">
-    <img src="res/curve_1.png" width="220">
-    <img src="res/curve_2.png" width="220">
-</figure>
+![image](https://github.com/CSC3170-2022Fall/project-amdvia/blob/main/res/curve.png)
 
-Then we utilize Kernel Density Estimation to estimate the approximate distribution and transform it into a continuous distribution. The left figure is the KDE for expense, right figure is the KDE for processing time. We test our method on three different level of occupation situation among 200 factories. And the result is reasonable since blue curve is tested on the slightest occupation situation, and the mean processing time is obviously smaller, but the expense is similar to other situations.
-<img src="res/final_curve.png" alt="final_curve.png"  />
+Then we utilize Kernel Density Estimation to estimate the approximate distribution and transform it into a continuous distribution. The left figure is the KDE for processing time, right figure is the KDE for expense. We test our method on three different level of occupation situation among 200 factories. And the result is reasonable since blue curve is tested on the slightest occupation situation, and the mean processing time is obviously smaller, but the expense is similar to other situations.
+
+![image](https://github.com/CSC3170-2022Fall/project-amdvia/blob/main/res/final_curve.png)
 
 This is a real-time simulation result that we will show to the customer. The blue curves are the estimated density function. The red line indicate the rank of the customer’s plan in expense and processing time. Then we use weights to summit the area under these two curve and get the final KPI.

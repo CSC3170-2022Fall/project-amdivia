@@ -90,4 +90,4 @@ Our analysis based on the input of customers and the information stored in our d
 ![image](https://github.com/CSC3170-2022Fall/project-amdvia/blob/main/res/final_curve.png)
 
 This is a real-time simulation result that we will show to the customer. 
-The left figure is the $KDE$ for expense, and the right figure is the $KDE$ for processing time. The blue curves are the estimated density function. The red line indicate the rank of the customer’s plan in expense and processing time. Then we use weights to summit the area under these two curve and get the final KPI.
+The left figure is the $KDE$ for processing time, and the right figure is the $KDE$ for expense. The blue curves are the estimated density function. The red line indicate the rank of the customer’s plan in expense and processing time. Then we use weights to summit the area under these two curve and get the final KPI.

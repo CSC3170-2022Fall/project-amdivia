@@ -1,54 +1,21 @@
 # Analysis Part
 
-Here is the test for the branch
+For the analysis, we need to first introduce some basic concepts. Given settled plants’ status and an order, we have multiple ways to produce it. So our KPI measures how good is your production plan among all possible plans and shown as a score. We basically consider two aspects to measure the KPI: expense and production time. These two aspects require us to consider both the production of each plant and the transportation among different plants.
 
-The program in this part will be stored in this branch
+Our analysis based on the input of customers and the information stored in our database. Basically, we settled down the order, which include different types of chips and their corresponding amount. Then we settled down the plants appointment lists, which shows when they are available in the future. Under these two conditions, we find the corresponding chip information and use the simulation and kernel density estimation to measures how good is the production plan proposed by the customer.
+## What is Analysis.py ?
+This program store our analysis algorithm.
 
-## Data Preparation
-The generated raw data is stored in 'info.csv', the code is in 'random_gen.py'. You can change the path and parameters in the code, it will automatically output a csv.
+We first extract the data we need, which is specified in the last page, then we perform a simulation algorithm to generate different legal production plans under the same situation as the customer’s plan. We then believe that the expense and the processing time of these simulation plans will approximate the true distributions respectively if our simulation plans are unbiased. Then the expense and the processing time of the customer’s plan indicates its rank among all these simulation plans. We then use weights to summit the ranks of expense and processing time and get the final KPI.
 
-The raw data include: capacity(evaluated by the # of chips), factory machine type, location, simulated occupation status, naive operation time of each operation (no difference between factories, maybe assigned later). 
+We used random simulation and keep it seems to be unbiased. The algorithm is : we randomly ordered the chips in the package and assigned the factory to the chips. Because the order of assigning chips may influence the processing time and the expense, then for each type of chip, we follow the manufacture sequence, i.e., operation1, operation2…, to assign a factory for each operation. For operation i, we first randomly pick a factory from all the factories that can implement operation i. We then calculate the processing time and the expense that this factory needed to do operation i (including the transition time and expense from the last factory). After that, we check the status of the picked factory and find enough spare period for it to implement operation i. We will then update the status of the factory  (with the label 'simulation' to indicate that this arrangement is not real). Then we randomly generated a small time gap to simulate the unwise choice and waste of time, which may happens in real plans. Then we repeat this procedure so on so forth. After one round of random assignment of an order, we will get a decision and its corresponding processing time and expense. By repeating this procedure a thousand times, we can approximate the distribution of the processing time and the expense corresponding to a specific package.
 
-## What is analysis.py?
-<del>懒得写英文了</del>
+<figure class="half">
+    <img src="res/curve_1.png" width="220">
+    <img src="res/curve_2.png" width="220">
+</figure>
 
-### 两个常数
+Then we utilize Kernel Density Estimation to estimate the approximate distribution and transform it into a continuous distribution. The left figure is the KDE for expense, right figure is the KDE for processing time. We test our method on three different level of occupation situation among 200 factories. And the result is reasonable since blue curve is tested on the slightest occupation situation, and the mean processing time is obviously smaller, but the expense is similar to other situations.
+<img src="res/final_curve.png" alt="final_curve.png"  />
 
-
-```python
-SIMULATION_RANGE = 10
-SIMULATION_TIMES = 1000
-```
-
-
-simulation 会取第 x 个能用的位置， $x \in [1, SIMULATION$ \_ $RANGE]$ 
-
-SIMULATION_TIMES 是模拟的次数
-
-
-### 函数
-
-```python
-allocate_package (package)
-```
-
-输入一个 package ，返回一个 sorted list 叫做 time_distribution，该 list 由每次模拟后 package 的完成时间组成
-
-（其实这个函数我实现了输入顾客选择的时间，然后返回用户的方案所需要的完成时间在 sorted list 里比多少百分比的模拟完成时间更快，返回是一个小数，把那个 return time_distribution 删掉就可以切换成这种模式）
-
-
-``` python
-insert_time (list, x, y)
-delete_time (list, x, y)
-```
-在 list 里插入/删除 tuple(x, y) ，并保持原 list 操作后有序，这俩是用来方便维护 process_list 
-
-### 后话
-
-或许可以去根据 time_distribution 的返回值去画个图？<del>还能用来水report</del>
-
-以及，csv 文件里输出的 list 是带引号的 string 类型，pandas 输出的时候有什么办法让它不带引号吗，不然在 analysis.py 里还要去写一个 eval(str(oplist)) 来读入 list。<del>虽然也能解决这个问题但是好蠢</del>
-
-comment 写完啦！
-
-如果想读代码的话，强烈建议把 class 里的内容截图放另一个屏幕上对照着看，<del>谁记得住那么多设定啊！</del>
+This is a real-time simulation result that we will show to the customer. The blue curves are the estimated density function. The red line indicate the rank of the customer’s plan in expense and processing time. Then we use weights to summit the area under these two curve and get the final KPI.

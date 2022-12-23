@@ -99,8 +99,8 @@ def confirm_storage():
     VALUES (%s, %s, %s, '%s', %s, %s, %s, %s, %s)
     """ % (str(order_id), str(consumer_id), str(status), str(tmp_list), str(actual_money), str(budget), str(order_time), str(expected_time), str(finish_time))
     print(sql)
- #   mycursor.execute(sql)
- #   mydb.commit()
+    mycursor.execute(sql)
+    mydb.commit()
 
     # package update
     for i in range(len(package_list)):
@@ -132,8 +132,8 @@ def confirm_storage():
       VALUES (%s, '%s', %s, '%s', '%s')
       """ % (str(package_id), str(chip_name), str(chip_number), str(plant_list_json), str(starttime_list_json))
       print(sql)
-  #    mycursor.execute(sql)
-   #   mydb.commit()
+      mycursor.execute(sql)
+      mydb.commit()
     return "successful"
 
 
@@ -149,14 +149,11 @@ def chip_process_list():
 
 @app.route("/plant/process", methods = ['get'])
 def plant_process_list():
-    data = request.args
-    if data is None or 'plant_id' not in data:
-        return "404 not found: Can't find plant_id!"
-    plant_id = data.get("plant_id")
-    return str(get_plant_process_list(mycursor, plant_id))
+    return str(get_plant_process_list(mycursor))
 
 
 
 if __name__ == "__main__":
   app.run(host = '0.0.0.0', port = 5000, debug = True)
+
 

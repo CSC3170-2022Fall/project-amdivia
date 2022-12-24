@@ -22,7 +22,7 @@ initial_bank.py: Initialize the bank database. Provide fake data in the bank acc
 
 ![image](https://github.com/CSC3170-2022Fall/project-amdvia/blob/740d8731b1090dbdaf137a537adce1d91d61b42d/res/bank_diagram.png)
 
-# Main branch
+# back end
 
 file: back.py, connector.py, analysis.py
 
@@ -32,7 +32,7 @@ connector.py: Interact with databse and request by functions.
 
 analysis.py: Analysis the plan the user provided. Validate it. If valid, analysis the plan and return kpi.
 
-
+![image](https://github.com/CSC3170-2022Fall/project-amdvia/blob/main/res/back_end%20diagram.jpg?raw=true)
 
 # 大致流程：
 用户提交方案 -> 方案通过并计算出kpi(/kpi) -> 用户确认后，尝试扣款其银行账户(/pay/) -> 扣款成功后，把订单信息写入数据库(/confirm)

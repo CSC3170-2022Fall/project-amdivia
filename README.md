@@ -8,8 +8,7 @@ This is our implementation for the course project of CSC3170, 2022 Fall, CUHK(SZ
 <!-- Please fill in "x" to replace the blank space between "[]" to tick the todo item; it's ticked on the first one by default. -->
 
 - [x] **Application with Database System(s)**
-- [X] **Implementation of a Database System**
-- [X] **Implementation of Front End System**
+- [ ] **Implementation of a Database System**
 
 ## Final Report
 
@@ -19,7 +18,7 @@ This is our implementation for the course project of CSC3170, 2022 Fall, CUHK(SZ
 
 ### Slides of the presentation
 
-[CSC3170 Team AMDIVIA presentation slides](https://github.com/CSC3170-2022Fall/project-amdvia/blob/main/Final_report/CSC3170%20Team%20AMDIVIA%20presentation%20slides.pptx)
+[CSC3170 Team AMDIVIA presentation slides](https://github.com/CSC3170-2022Fall/project-amdvia/blob/main/Final_report/CSC3170%20Team%20AMDIVIA%20presentation%20slides.pdf)
 
 ### Final report pdf
 

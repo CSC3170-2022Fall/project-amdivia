@@ -9,6 +9,7 @@ This is our implementation for the course project of CSC3170, 2022 Fall, CUHK(SZ
 
 - [x] **Application with Database System(s)**
 - [X] **Implementation of a Database System**
+- [X] **Implementation of Front End System**
 
 ## Final Report
 
